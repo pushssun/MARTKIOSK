@@ -5,7 +5,24 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-    public Bag[] bags{ get; private set; }
+    public Scan Scan;
+
+    //============Item===============
+    public int itemTotal;
+    public int itemCount;
+
+    //==========Bag==================
+    public Bag[] bags;
+    public int bagCount;
+    public int bagTotal;
+
+    //=========Cupon================
+    public int cuponCount;
+    public int cuponPrice;
+
+    public int totalPrice;
+    public int totalCount;
+    public int pay;
 
     private void Awake()
     {
@@ -15,7 +32,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
