@@ -230,7 +230,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -6667,8 +6667,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 380760833}
-  - {fileID: 332945945}
-  - {fileID: 1071400076}
   m_Father: {fileID: 771489228}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -10957,7 +10955,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 224812629}
+  m_Father: {fileID: 380760833}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
@@ -12100,6 +12098,8 @@ RectTransform:
   m_Children:
   - {fileID: 310548967}
   - {fileID: 759142215}
+  - {fileID: 332945945}
+  - {fileID: 1071400076}
   m_Father: {fileID: 224812629}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -19601,17 +19601,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\"\uCFE0\uD3F0 \uB4F1\uB85D\"\uC744 \uB204\uB974\uBA74 \uAC00\uC9C0\uACE0
-    \uC788\uB294 \uCFE0\uD3F0\uC744 \uB4F1\uB85D\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.
-    \n\"\uCFE0\uD3F0 \uC2A4\uCE94\"\uC744 \uB20C\uB7EC \uCFE0\uD3F0\uC744 \uCD94\uAC00\uD574
-    \uC8FC\uC138\uC694. \uC2E4\uC81C\uB85C\uB294 \uBC14\uCF54\uB4DC\uB85C \uC9C1\uC811
-    \uC2A4\uCE94\uD574 \uC8FC\uC138\uC694."
+  m_text: "\"\uCFE0\uD3F0 \uC2A4\uCE94\"\uC744 \uC120\uD0DD\uD558\uACE0 \"\uCFE0\uD3F0
+    \uB4F1\uB85D\"\uC744 \uC120\uD0DD\uD574 \uCFE0\uD3F0\uC744 \uCD94\uAC00\uD574
+    \uC8FC\uC138\uC694. \n(\uC2E4\uC81C\uB85C\uB294 \uBC14\uCF54\uB4DC\uB85C \uC9C1\uC811
+    \uC2A4\uCE94\uD574 \uC8FC\uC138\uC694.)"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 57db171e9b5c7804985ee69293f5f3a5, type: 2}
   m_sharedMaterial: {fileID: -2381564653286544451, guid: 57db171e9b5c7804985ee69293f5f3a5, type: 2}
@@ -25433,13 +25432,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\"\uC2A4\uCE94 \uC2DC\uC791\uD558\uAE30\"\uB97C \uD074\uB9AD\uD558\uBA74
+  m_text: "\"\uC2A4\uCE94 \uC2DC\uC791\uD558\uAE30\"\uB97C \uC120\uD0DD\uD558\uBA74
     \uB9C8\uD2B8 \uD0A4\uC624\uC2A4\uD2B8\uAC00 \uC2DC\uC791\uB429\uB2C8\uB2E4."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 57db171e9b5c7804985ee69293f5f3a5, type: 2}
@@ -27513,14 +27512,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\"\uC2E0\uC6A9 \xB7 \uCCB4\uD06C\uCE74\uB4DC\"\uB97C \uB20C\uB7EC \uACB0\uC81C\uB97C
-    \uC9C4\uD589\uD574 \uC8FC\uC138\uC694. "
+  m_text: "\uACB0\uC81C \uC218\uB2E8\uC744 \uC120\uD0DD\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.
+    \r\n\"\uC2E0\uC6A9 \xB7 \uCCB4\uD06C\uCE74\uB4DC\"\uB97C \uB20C\uB7EC \uACB0\uC81C\uB97C
+    \uC9C4\uD589\uD574 \uC8FC\uC138\uC694."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 57db171e9b5c7804985ee69293f5f3a5, type: 2}
   m_sharedMaterial: {fileID: -2381564653286544451, guid: 57db171e9b5c7804985ee69293f5f3a5, type: 2}
@@ -31432,7 +31432,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3412151}
-  m_Father: {fileID: 224812629}
+  m_Father: {fileID: 380760833}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -31921,14 +31921,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
   m_text: "\uC885\uC774 \uC601\uC218\uC99D\uC744 \uBF51\uACE0 \uC2F6\uC73C\uBA74
-    \"\uC544\uB2C8\uC694\"\uB97C \uC544\uB2C8\uBA74 \"\uC608\"\uB97C \uB20C\uB7EC\uC8FC\uC138\uC694."
+    \"\uC544\uB2C8\uC694\"\uB97C \uC544\uB2C8\uBA74 \"\uC608\"\uB97C \uC120\uD0DD\uD574
+    \uC8FC\uC138\uC694."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 57db171e9b5c7804985ee69293f5f3a5, type: 2}
   m_sharedMaterial: {fileID: -2381564653286544451, guid: 57db171e9b5c7804985ee69293f5f3a5, type: 2}
@@ -34037,13 +34038,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\"\uCFE0\uD3F0 \uB4F1\uB85D\"\uC744 \uB204\uB974\uBA74 \uAC00\uC9C0\uACE0
+  m_text: "\"\uCFE0\uD3F0 \uB4F1\uB85D\"\uC744 \uC120\uD0DD\uD558\uBA74 \uAC00\uC9C0\uACE0
     \uC788\uB294 \uCFE0\uD3F0\uC744 \uB4F1\uB85D\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 57db171e9b5c7804985ee69293f5f3a5, type: 2}
@@ -45272,6 +45273,8 @@ MonoBehaviour:
   totalPrice: 0
   totalCount: 0
   pay: 0
+  finishUI: {fileID: 320941523}
+  isSuccess: 0
 --- !u!4 &1555600506
 Transform:
   m_ObjectHideFlags: 0
