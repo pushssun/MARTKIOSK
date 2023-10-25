@@ -24,8 +24,8 @@ public class Scan : MonoBehaviour
     //==========nobarcode===========
     public NoBarcodeDatabase NoBarcodeDatabase;
 
-    private int index;
     private ScanItem[] scanItems;
+    private int index;
 
     // Start is called before the first frame update
     void Start()
@@ -133,6 +133,34 @@ public class Scan : MonoBehaviour
         }
         return -1;
     }
+
+    public bool IsItem()
+    {
+        for(int i=0; i<index;i++)
+        {
+            for(int j = 0; j < ItemDatabase.items.Length; j++)
+            {
+                if (scanItems[i].name.Equals(ItemDatabase.items[j].name))
+                    return true;
+
+            }
+        }
+        return false;
+    }
+
+    public bool IsNobarcodeItem()
+    {
+        for (int i = 0; i < index; i++)
+        {
+            for (int j = 0; j < NoBarcodeDatabase.items.Length; j++)
+            {
+                if (scanItems[i].name.Equals(NoBarcodeDatabase.items[j].name))
+                    return true;
+            }
+        }
+        return false;
+    }
+
     
     private void TransText(GameObject itemPf, ScanItem item)
     {
