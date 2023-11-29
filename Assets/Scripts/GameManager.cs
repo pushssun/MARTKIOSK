@@ -1,16 +1,27 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 
 public enum GameStep
 {
     None,
-    One,
-    Two,
-    Three,
+    Step1,
+    Step2,
+    Step3,
+}
+[System.Serializable]
+public class GameData
+{
+    public string kiosk_id;
+    public string play_date;
+    public int play_stage;
+    public int play_time;
+    public bool isSuccess;
 }
 
 public class GameManager : MonoBehaviour
@@ -42,9 +53,14 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI randomTxt; //게임 랜덤 진행 text
     public bool isSuccess; //성공 여부
 
+    [SerializeField] private GameObject _successPanel;
+    [SerializeField] private GameObject _FailPanel;
+
     private GameStep gameStep;
     private int playTime;
     private Stopwatch sw;
+    private GameData _gameData;
+    private string sceneNameType;
 
     //랜덤 게임
     private string[] step2 = { "바코드없는 상품", "종량제·장바구니" };
@@ -53,18 +69,27 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this; //GameManager 할당
+        Instance = this; //GameManager 할당\
+        _gameData = new GameData();
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        string sceneName = SceneManager.GetActiveScene().name.Substring(5,5); //연습UI면 None 반환
-        if (sceneName.StartsWith("Prac"))
+        _gameData.play_date = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        string sceneName = SceneManager.GetActiveScene().name;
+        sceneNameType = sceneName.Substring(5,5); //연습UI면 None 반환
+
+        _gameData.kiosk_id = sceneName.Substring(0,4);
+        UnityEngine.Debug.Log(sceneName.Substring(9, 1));
+        _gameData.play_stage = int.Parse(sceneName.Substring(9, 1));
+
+        if (sceneNameType.StartsWith("Prac"))
         {
             gameStep = GameStep.None;
         }
-        gameStep = (GameStep)char.GetNumericValue(sceneName[sceneName.Length - 1]);
+        gameStep = (GameStep)char.GetNumericValue(sceneNameType[sceneNameType.Length - 1]);
         Scan.UpdateItem();
 
         //시간 측정
@@ -74,14 +99,14 @@ public class GameManager : MonoBehaviour
         //랜덤 진행 (2단계와 3단계 2개씩 랜덤 존재)
         if(randomTxt != null)
         {
-            random = Random.Range(0, 2);
-            if(gameStep == GameStep.Two)
+            random = UnityEngine.Random.Range(0, 2);
+            if(gameStep == GameStep.Step2)
             {
-                randomTxt.text = step2[random] + "을(를) 한 개 이상 담고 결제해주세요." + System.Environment.NewLine + "(결제 수단이나 포인트는 적용해도 됩니다.";
+                randomTxt.text = step2[random] + "을(를) 한 개 이상 담고 결제해주세요." + System.Environment.NewLine + "(결제 수단이나 포인트는 적용해도 됩니다.)";
             }
-            else if(gameStep == GameStep.Three)
+            else if(gameStep == GameStep.Step3)
             {
-                randomTxt.text = step3[random] + "하고 결제해주세요." + System.Environment.NewLine + "(결제 수단이나 포인트는 적용해도 됩니다.";
+                randomTxt.text = step3[random] + "하고 결제해주세요." + System.Environment.NewLine + "(결제 수단이나 포인트는 적용해도 됩니다.)";
             }
         }
     }
@@ -93,17 +118,32 @@ public class GameManager : MonoBehaviour
             sw.Stop();
             switch (gameStep)
             {
-                case GameStep.One:
+                case GameStep.Step1:
                     isSuccess = Scan.IsItem();
                     
                     break;
-                case GameStep.Two:
+                case GameStep.Step2:
                     Step2();
                     break;
-                case GameStep.Three:
+                case GameStep.Step3:
                     Step3();
                     break;
             }
+            _gameData.isSuccess = isSuccess;
+
+            if(sceneNameType.StartsWith("Test"))
+            {
+                if (isSuccess)
+                {
+                    _successPanel.SetActive(true);
+                }
+                else
+                {
+                    _FailPanel.SetActive(true);
+                }
+
+            }
+            SetQuit();
         }
 
         //시간 계산
@@ -124,7 +164,19 @@ public class GameManager : MonoBehaviour
             {
                 playTimeTxt.text = "소요 시간 : " + seconds.ToString() + "초";
             }
+            _gameData.play_time = playTime;
         }
+    }
+
+    public void SetQuit()
+    {
+#if UNITY_EDITOR
+        // Application.Quit() does not work in the editor so
+        // UnityEditor.EditorApplication.isPlaying need to be set to false to end the game
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+                Application.Quit();
+#endif
     }
 
     private void Step2()
@@ -166,5 +218,43 @@ public class GameManager : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    private void SaveData()
+    {
+        string jsonData = JsonUtility.ToJson(_gameData);
+
+        string url = "ec2-13-125-255-122.ap-northeast-2.compute.amazonaws.com/kiosk/insertData";
+
+        StartCoroutine(SendDataToWeb(jsonData, url));
+    }
+
+    private IEnumerator SendDataToWeb(string jsonData, string url)
+    {
+        byte[] dataBytes = System.Text.Encoding.UTF8.GetBytes(jsonData);
+
+        UnityWebRequest www = UnityWebRequest.PostWwwForm(url, "POST");
+        www.uploadHandler = new UploadHandlerRaw(dataBytes);
+        www.downloadHandler = new DownloadHandlerBuffer();
+
+        yield return www.SendWebRequest();
+
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            UnityEngine.Debug.LogError("Failed to send data to the web server: " + www.error);
+        }
+        else
+        {
+            UnityEngine.Debug.Log("Data sent successfully!");
+        }
+    }
+
+    private void OnApplicationPause(bool pause)
+    {
+        SaveData();
+    }
+    private void OnApplicationQuit()
+    {
+        SaveData();
     }
 }
