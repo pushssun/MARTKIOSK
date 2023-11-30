@@ -21,7 +21,7 @@ public class GameData
     public string play_date;
     public int play_stage;
     public int play_time;
-    public bool isSuccess;
+    public int is_success;
 }
 
 public class GameManager : MonoBehaviour
@@ -129,7 +129,6 @@ public class GameManager : MonoBehaviour
                     Step3();
                     break;
             }
-            _gameData.isSuccess = isSuccess;
 
             if(sceneNameType.StartsWith("Test"))
             {
@@ -141,9 +140,10 @@ public class GameManager : MonoBehaviour
                 {
                     _FailPanel.SetActive(true);
                 }
+                _gameData.is_success = Convert.ToInt32(isSuccess);
+                SaveData(); //끝나면 정보 보내기
 
             }
-            SetQuit();
         }
 
         //시간 계산
@@ -246,15 +246,8 @@ public class GameManager : MonoBehaviour
         else
         {
             UnityEngine.Debug.Log("Data sent successfully!");
+            SetQuit();
         }
     }
 
-    private void OnApplicationPause(bool pause)
-    {
-        SaveData();
-    }
-    private void OnApplicationQuit()
-    {
-        SaveData();
-    }
 }
