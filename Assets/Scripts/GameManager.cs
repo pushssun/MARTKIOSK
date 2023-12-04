@@ -61,6 +61,7 @@ public class GameManager : MonoBehaviour
     private Stopwatch sw;
     private GameData _gameData;
     private string sceneNameType;
+    private bool _saveData;
 
     //랜덤 게임
     private string[] step2 = { "바코드없는 상품", "종량제·장바구니" };
@@ -141,7 +142,11 @@ public class GameManager : MonoBehaviour
                     _FailPanel.SetActive(true);
                 }
                 _gameData.is_success = Convert.ToInt32(isSuccess);
-                SaveData(); //끝나면 정보 보내기
+                if (!_saveData)
+                {
+                    SaveData(); //끝나면 정보 보내기
+
+                }
 
             }
         }
@@ -222,9 +227,10 @@ public class GameManager : MonoBehaviour
 
     private void SaveData()
     {
+        _saveData = true;
         string jsonData = JsonUtility.ToJson(_gameData);
 
-        string url = "ec2-13-125-255-122.ap-northeast-2.compute.amazonaws.com/kiosk/insertData";
+        string url = "13.125.255.122/kiosk/insertData";
 
         StartCoroutine(SendDataToWeb(jsonData, url));
     }
