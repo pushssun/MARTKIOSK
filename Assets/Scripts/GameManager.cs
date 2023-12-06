@@ -230,7 +230,7 @@ public class GameManager : MonoBehaviour
         _saveData = true;
         string jsonData = JsonUtility.ToJson(_gameData);
 
-        string url = "13.125.255.122/kiosk/insertData";
+        string url = "https://003operation.shop/kiosk/insertData";
 
         StartCoroutine(SendDataToWeb(jsonData, url));
     }
@@ -242,6 +242,7 @@ public class GameManager : MonoBehaviour
         UnityWebRequest www = UnityWebRequest.PostWwwForm(url, "POST");
         www.uploadHandler = new UploadHandlerRaw(dataBytes);
         www.downloadHandler = new DownloadHandlerBuffer();
+        www.SetRequestHeader("Content-Type", "application/json");
 
         yield return www.SendWebRequest();
 
