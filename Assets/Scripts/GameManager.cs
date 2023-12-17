@@ -17,11 +17,13 @@ public enum GameStep
 [System.Serializable]
 public class GameData
 {
-    public string kiosk_id;
+    public string member_id;
+    public string kiosk_category_id;
     public string play_date;
     public int play_stage;
     public int play_time;
     public int is_success;
+    public int is_game;
 }
 
 public class GameManager : MonoBehaviour
@@ -47,67 +49,73 @@ public class GameManager : MonoBehaviour
     public int pay;
 
     //=========Game================
-    public GameObject finishUI; //finishUI°¡ ÄÑÁö¸é¼­ ¼º°ø¿©ºÎ È®ÀÎ
-    public GameObject usePointUI; //point »ç¿ë ¿©ºÎ È®ÀÎ
-    public TextMeshProUGUI playTimeTxt; //°ÔÀÓ ÁøÇà ½Ã°£
-    public TextMeshProUGUI randomTxt; //°ÔÀÓ ·£´ý ÁøÇà text
-    public bool isSuccess; //¼º°ø ¿©ºÎ
+    public GameObject finishUI; //finishUIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½é¼­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
+    public GameObject usePointUI; //point ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
+    public TextMeshProUGUI playTimeTxt; //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½
+    public TextMeshProUGUI randomTxt; //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ text
+    public bool isSuccess; //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
     [SerializeField] private GameObject _successPanel;
     [SerializeField] private GameObject _FailPanel;
 
-    private GameStep gameStep;
+    private GameStep _gameStep;
     private int playTime;
     private Stopwatch sw;
     private GameData _gameData;
-    private string sceneNameType;
+    private string _sceneNameType;
     private bool _saveData;
 
-    //·£´ý °ÔÀÓ
-    private string[] step2 = { "¹ÙÄÚµå¾ø´Â »óÇ°", "Á¾·®Á¦¡¤Àå¹Ù±¸´Ï" };
-    private string[] step3 = { "ÄíÆùÀ» ÇÑ °³ÀÌ»ó", "Æ÷ÀÎÆ® Àû¸³" };
+    //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    private string[] step2 = { "ë°”ì½”ë“œì—†ëŠ” ìƒí’ˆ", "ì¢…ëŸ‰ì œÂ·ìž¥ë°”êµ¬ë‹ˆ" };
+    private string[] step3 = { "ì¿ í°ì„ í•œ ê°œì´ìƒ", "í¬ì¸íŠ¸ ì ë¦½" };
     private int random;
 
     private void Awake()
     {
-        Instance = this; //GameManager ÇÒ´ç\
+        Instance = this; //GameManager ï¿½Ò´ï¿½\
         _gameData = new GameData();
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        Application.ExternalCall("unityFunction", _gameData.member_id);
+        
         _gameData.play_date = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
 
         string sceneName = SceneManager.GetActiveScene().name;
-        sceneNameType = sceneName.Substring(5,5); //¿¬½ÀUI¸é None ¹ÝÈ¯
+        _sceneNameType = sceneName.Substring(5,5); //ï¿½ï¿½ï¿½ï¿½UIï¿½ï¿½ None ï¿½ï¿½È¯
 
-        _gameData.kiosk_id = sceneName.Substring(0,4);
+        _gameData.kiosk_category_id = sceneName.Substring(0,4);
         UnityEngine.Debug.Log(sceneName.Substring(9, 1));
         _gameData.play_stage = int.Parse(sceneName.Substring(9, 1));
 
-        if (sceneNameType.StartsWith("Prac"))
+        if (_sceneNameType.StartsWith("Prac"))
         {
-            gameStep = GameStep.None;
+            _gameData.is_game = 0;
         }
-        gameStep = (GameStep)char.GetNumericValue(sceneNameType[sceneNameType.Length - 1]);
+        else if (_sceneNameType.StartsWith("Test"))
+        {
+            _gameData.is_game = 1;
+        }
+        _gameStep = (GameStep)char.GetNumericValue(_sceneNameType[_sceneNameType.Length - 1]);
         Scan.UpdateItem();
 
-        //½Ã°£ ÃøÁ¤
+        //ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½
         sw = new Stopwatch();
         sw.Start();
 
-        //·£´ý ÁøÇà (2´Ü°è¿Í 3´Ü°è 2°³¾¿ ·£´ý Á¸Àç)
+        //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (2ï¿½Ü°ï¿½ï¿½ 3ï¿½Ü°ï¿½ 2ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
         if(randomTxt != null)
         {
             random = UnityEngine.Random.Range(0, 2);
-            if(gameStep == GameStep.Step2)
+            if (_gameStep == GameStep.Step2)
             {
-                randomTxt.text = step2[random] + "À»(¸¦) ÇÑ °³ ÀÌ»ó ´ã°í °áÁ¦ÇØÁÖ¼¼¿ä." + System.Environment.NewLine + "(°áÁ¦ ¼ö´ÜÀÌ³ª Æ÷ÀÎÆ®´Â Àû¿ëÇØµµ µË´Ï´Ù.)";
+                randomTxt.text = step2[random] + "ì„(ë¥¼) í•œ ê°œ ì´ìƒ ë‹´ê³  ê²°ì œí•´ì£¼ì„¸ìš”." + System.Environment.NewLine + "(ê²°ì œ ìˆ˜ë‹¨ì´ë‚˜ í¬ì¸íŠ¸ëŠ” ì ìš©í•´ë„ ë©ë‹ˆë‹¤.)";
             }
-            else if(gameStep == GameStep.Step3)
+            else if (_gameStep == GameStep.Step3)
             {
-                randomTxt.text = step3[random] + "ÇÏ°í °áÁ¦ÇØÁÖ¼¼¿ä." + System.Environment.NewLine + "(°áÁ¦ ¼ö´ÜÀÌ³ª Æ÷ÀÎÆ®´Â Àû¿ëÇØµµ µË´Ï´Ù.)";
+                randomTxt.text = step3[random] + "í•˜ê³  ê²°ì œí•´ì£¼ì„¸ìš”." + System.Environment.NewLine + "(ê²°ì œ ìˆ˜ë‹¨ì´ë‚˜ í¬ì¸íŠ¸ëŠ” ì ìš©í•´ë„ ë©ë‹ˆë‹¤.)";
             }
         }
     }
@@ -117,7 +125,7 @@ public class GameManager : MonoBehaviour
         if (finishUI.activeSelf == true)
         {
             sw.Stop();
-            switch (gameStep)
+            switch (_gameStep)
             {
                 case GameStep.Step1:
                     isSuccess = Scan.IsItem();
@@ -131,27 +139,26 @@ public class GameManager : MonoBehaviour
                     break;
             }
 
-            if(sceneNameType.StartsWith("Test"))
-            {
-                if (isSuccess)
-                {
-                    _successPanel.SetActive(true);
-                }
-                else
-                {
-                    _FailPanel.SetActive(true);
-                }
-                _gameData.is_success = Convert.ToInt32(isSuccess);
-                if (!_saveData)
-                {
-                    SaveData(); //³¡³ª¸é Á¤º¸ º¸³»±â
 
-                }
+            if (isSuccess)
+            {
+                _successPanel.SetActive(true);
+            }
+            else
+            {
+                _FailPanel.SetActive(true);
+            }
+            _gameData.is_success = Convert.ToInt32(isSuccess);
+            if (!_saveData)
+            {
+                SaveData(); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
             }
+
+            
         }
 
-        //½Ã°£ °è»ê
+        //ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½
         if(playTimeTxt != null)
         {
             playTime = (int)sw.ElapsedMilliseconds / 1000;
@@ -160,17 +167,23 @@ public class GameManager : MonoBehaviour
 
             minutes = playTime / 60;
             seconds = playTime % 60;
-            
-            if(minutes > 0)
+
+            if (minutes > 0)
             {
-                playTimeTxt.text = "¼Ò¿ä ½Ã°£ : " + minutes.ToString() + "ºÐ " + seconds.ToString() + "ÃÊ";
+                playTimeTxt.text = "ì†Œìš” ì‹œê°„ : " + minutes.ToString() + "ë¶„ " + seconds.ToString() + "ì´ˆ";
             }
             else
             {
-                playTimeTxt.text = "¼Ò¿ä ½Ã°£ : " + seconds.ToString() + "ÃÊ";
+                playTimeTxt.text = "ì†Œìš” ì‹œê°„ : " + seconds.ToString() + "ì´ˆ";
             }
             _gameData.play_time = playTime;
         }
+    }
+
+    public void ReceiveData(string message)
+    {
+        _gameData.member_id = message;
+        UnityEngine.Debug.Log("Received message from JavaScript: " + message);
     }
 
     public void SetQuit()
@@ -186,29 +199,48 @@ public class GameManager : MonoBehaviour
 
     private void Step2()
     {
-        if(random == 0)
+        if (_sceneNameType.StartsWith("Test"))
         {
-            isSuccess = Scan.IsNobarcodeItem();
+            if(random == 0)
+            {
+                isSuccess = Scan.IsNobarcodeItem();
+            }
+            else
+            {
+                isSuccess = IsBagItem();
+            }
+
         }
-        else
+        else if (_sceneNameType.StartsWith("Prac"))
         {
-            isSuccess = IsBagItem();
+            isSuccess = Scan.IsNobarcodeItem() || IsBagItem(); 
         }
+        
         
     }
 
     private void Step3()
     {
-        if (random == 0)
+        if (_sceneNameType.StartsWith("Test"))
         {
-            if(cuponCount > 0)
+            if (random == 0)
             {
-                isSuccess = true;
+                if (cuponCount > 0)
+                {
+                    isSuccess = true;
+                }
+            }
+            else
+            {
+                if (usePointUI.activeSelf == true)
+                {
+                    isSuccess = true;
+                }
             }
         }
-        else
+        else if (_sceneNameType.StartsWith("Prac"))
         {
-            if(usePointUI.activeSelf == true)
+            if (cuponCount > 0 || usePointUI.activeSelf == true)
             {
                 isSuccess = true;
             }
@@ -243,6 +275,7 @@ public class GameManager : MonoBehaviour
         www.uploadHandler = new UploadHandlerRaw(dataBytes);
         www.downloadHandler = new DownloadHandlerBuffer();
         www.SetRequestHeader("Content-Type", "application/json");
+        www.SetRequestHeader("withCredentials", "true");
 
         yield return www.SendWebRequest();
 
